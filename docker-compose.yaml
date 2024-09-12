@@ -1,0 +1,43 @@
+services:
+  # База данных line-provider
+  db_line-provider:
+    image: postgres:13.8
+    container_name: db_line-provider
+    environment:
+      POSTGRES_HOST: db_line-provider
+    env_file:
+      - .env
+    ports:
+      - ${POSTGRES_PORT_LP}:5432
+    volumes:
+      - ./pgdata_lp:/var/lib/postgresql/data
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -d ${POSTGRES_DB_LP} -U ${POSTGRES_USER_LP}" ]
+      interval: 30s
+      retries: 5
+      timeout: 5s
+    profiles:
+      - line-provider
+      - both
+
+  # База данных bet-market
+  db_bet-market:
+    image: postgres:13.8
+    container_name: db_bet-market
+    environment:
+      POSTGRES_HOST: db_bet-market
+    env_file:
+      - .env
+    ports:
+      - "${POSTGRES_PORT_BM}:5433"
+    volumes:
+      - ./pgdata_bm:/var/lib/postgresql/data
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -d ${POSTGRES_DB_BM} -U 
+      ${POSTGRES_USER_BM}" ]
+      interval: 30s
+      retries: 5
+      timeout: 5s
+    profiles:
+      - bet-market
+      - both
